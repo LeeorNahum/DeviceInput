@@ -26,6 +26,7 @@ class DeviceInputCallbacks {
     bool hasCallbacks();
     bool hasCallbacks(CallbackType callback_type);
     
+    // TODO add addCallbacks which replaces the addToggleCallback methods https://chat.openai.com/chat/67ef9ae1-6e23-49e2-8cc0-65ff2ae118f0
     bool addCallback(CallbackType callback_type, DeviceInputCallback callback);
     template <typename... Callbacks>
     bool addCallbacks(CallbackType callback_type, DeviceInputCallback callback, Callbacks... callbacks);
