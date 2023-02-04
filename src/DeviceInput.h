@@ -8,7 +8,7 @@
 template <typename TReturn = int>
 class DeviceInput: public DeviceInputCallbacks {
   public:
-    using InputFunction = TReturn (*)();
+    using InputFunction = TReturn (*)(); // TODO ? void pointers
 
     DeviceInput(InputFunction input_function, TReturn detection_exact, int update_interval_ms = 0);
     DeviceInput(InputFunction input_function, TReturn detection_range[2], int update_interval_ms = 0);
