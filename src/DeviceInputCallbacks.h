@@ -14,10 +14,10 @@ enum CallbackType {
   FALLING_READING
 };
 
+using DeviceInputCallback = void (*)();
+
 class DeviceInputCallbacks {
   public:
-    using DeviceInputCallback = void (*)();
-    
     void disableCallbacks(bool disable = true);
     void enableCallbacks(bool enable = true);
     bool callbacksDisabled();
@@ -28,28 +28,15 @@ class DeviceInputCallbacks {
     
     // TODO add addCallbacks which replaces the addToggleCallback methods https://chat.openai.com/chat/67ef9ae1-6e23-49e2-8cc0-65ff2ae118f0
     bool addCallback(CallbackType callback_type, DeviceInputCallback callback);
-    template <typename... Callbacks>
-    bool addCallbacks(CallbackType callback_type, DeviceInputCallback callback, Callbacks... callbacks);
-    template <uint8_t Size>
-    bool addCallbacks(CallbackType callback_type, DeviceInputCallback (&callback_array)[Size]);
+    template <typename... CallbacksAndTypes>
+    bool addCallbacks(CallbackType callback_type, DeviceInputCallback callback, CallbacksAndTypes... callbacks_and_types);
     
     bool setCallback(CallbackType callback_type, DeviceInputCallback callback);
-    template <typename... Callbacks>
-    bool setCallbacks(CallbackType callback_type, Callbacks... callbacks);
-    template <uint8_t Size>
-    bool setCallbacks(CallbackType callback_type, DeviceInputCallback (&callback_array)[Size]);
+    template <typename... CallbacksAndTypes>
+    bool setCallbacks(CallbackType callback_type, DeviceInputCallback callback, CallbacksAndTypes... callbacks_and_types);
 
     bool clearCallbacks(CallbackType callback_type);
     bool clearCallbacks();
-    
-    bool addToggleCallbacks(DeviceInputCallback toggle_callback, DeviceInputCallback untoggle_callback = nullptr);
-    bool setToggleCallbacks(DeviceInputCallback toggle_callback, DeviceInputCallback untoggle_callback = nullptr);
-    
-    bool addDetectedCallbacks(DeviceInputCallback detected_callback, DeviceInputCallback undetected_callback = nullptr);
-    bool setDetectedCallbacks(DeviceInputCallback detected_callback, DeviceInputCallback undetected_callback = nullptr);
-    
-    bool addReadingCallbacks(DeviceInputCallback rising_reading_callback, DeviceInputCallback falling_reading_callback = nullptr);
-    bool setReadingCallbacks(DeviceInputCallback rising_reading_callback, DeviceInputCallback falling_reading_callback = nullptr);
     
     //bool runCallback(CallbackType callback_type);
     bool runCallbacks();
@@ -71,7 +58,13 @@ class DeviceInputCallbacks {
     
     bool getCallbackPointers(CallbackType callback_type, DeviceInputCallback** callbacks_array, uint8_t** num_callbacks);
     
+    template <typename... CallbacksAndTypes>
+    bool addCallbacks(CallbackType callback_type, CallbackType new_callback_type, CallbacksAndTypes... callbacks_and_types);
     bool addCallbacks(CallbackType callback_type);
+    
+    template <typename... CallbacksAndTypes>
+    bool setCallbacks(CallbackType callback_type, CallbackType new_callback_type, CallbacksAndTypes... callbacks_and_types);
+    bool setCallbacks(CallbackType callback_type);
 
     DeviceInputCallback toggle_callbacks[MAX_CALLBACK_ARRAY_SIZE] = {nullptr};
     uint8_t num_toggle_callbacks = 0;
