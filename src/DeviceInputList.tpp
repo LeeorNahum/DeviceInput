@@ -121,6 +121,20 @@ DeviceInput<TReturn>* DeviceInputList<TReturn>::getDeviceInput(uint8_t index) {
 }
 
 template <typename TReturn>
+void DeviceInputList<TReturn>::updateReadingForAll() {
+  for (uint8_t i = 0; i < this->input_list_size; i++) {
+    this->device_input_list[i]->updateReading();
+  }
+}
+
+template <typename TReturn>
+void DeviceInputList<TReturn>::updateDetectedForAll() {
+  for (uint8_t i = 0; i < this->input_list_size; i++) {
+    this->device_input_list[i]->updateDetected();
+  }
+}
+
+template <typename TReturn>
 bool DeviceInputList<TReturn>::updateAll() {
   if (this->getUpdateInterval() > 0) {
     unsigned long current_time = millis();

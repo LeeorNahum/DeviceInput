@@ -41,6 +41,10 @@ class DeviceInputList {
     DeviceInputType** getList();
     DeviceInputType* getDeviceInput(uint8_t index);
 
+    void updateReadingForAll();
+    
+    void updateDetectedForAll();
+    
     bool updateAll();
 
     bool addCallbackForAll(CallbackType callback_type, DeviceInputCallback callback);
