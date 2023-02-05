@@ -42,33 +42,18 @@ class DeviceInputList {
     DeviceInputType* getDeviceInput(uint8_t index);
 
     bool updateAll();
-    
-    using DeviceInputCallback = void (*)();
 
     bool addCallbackForAll(CallbackType callback_type, DeviceInputCallback callback);
-    template <typename... Callbacks>
-    bool addCallbacksForAll(CallbackType callback_type, Callbacks... callbacks);
-    template <uint8_t Size>
-    bool addCallbacksForAll(CallbackType callback_type, DeviceInputCallback (&callback_array)[Size]);
+    template <typename... CallbacksAndTypes>
+    bool addCallbacksForAll(CallbackType callback_type, DeviceInputCallback callback, CallbacksAndTypes... callbacks_and_types);
     
     bool setCallbackForAll(CallbackType callback_type, DeviceInputCallback callback);
-    template <typename... Callbacks>
-    bool setCallbacksForAll(CallbackType callback_type, Callbacks... callbacks);
-    template <uint8_t Size>
-    bool setCallbacksForAll(CallbackType callback_type, DeviceInputCallback (&callback_array)[Size]);
+    template <typename... CallbacksAndTypes>
+    bool setCallbacksForAll(CallbackType callback_type, DeviceInputCallback callback, CallbacksAndTypes... callbacks_and_types);
 
     bool clearCallbacksForAll(CallbackType callback_type);
     bool clearCallbacksForAll();
     
-    bool addToggleCallbacksForAll(DeviceInputCallback toggle_callback, DeviceInputCallback untoggle_callback = nullptr);
-    bool setToggleCallbacksForAll(DeviceInputCallback toggle_callback, DeviceInputCallback untoggle_callback = nullptr);
-    
-    bool addDetectedCallbacksForAll(DeviceInputCallback detected_callback, DeviceInputCallback undetected_callback = nullptr);
-    bool setDetectedCallbacksForAll(DeviceInputCallback detected_callback, DeviceInputCallback undetected_callback = nullptr);
-    
-    bool addReadingCallbacksForAll(DeviceInputCallback rising_reading_callback, DeviceInputCallback falling_reading_callback = nullptr);
-    bool setReadingCallbacksForAll(DeviceInputCallback rising_reading_callback, DeviceInputCallback falling_reading_callback = nullptr);
-
   private:
     DeviceInputType* device_input_list[MAX_INPUT_LIST_ARRAY_SIZE];
     uint8_t input_list_size;

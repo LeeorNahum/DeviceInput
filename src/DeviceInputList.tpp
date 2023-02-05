@@ -7,7 +7,7 @@ DeviceInputList<TReturn>::DeviceInputList(int update_interval_ms) {
 template <typename TReturn>
 template <typename... DeviceInputs>
 DeviceInputList<TReturn>::DeviceInputList(int update_interval_ms, DeviceInputs*... device_inputs) {
-  this->setUpdateInterval(update_interval_ms); 
+  this->setUpdateInterval(update_interval_ms);
   this->setDeviceInputs(device_inputs...);
 }
 
@@ -147,21 +147,11 @@ bool DeviceInputList<TReturn>::addCallbackForAll(CallbackType callback_type, Dev
 }
 
 template <typename TReturn>
-template <typename... Callbacks>
-bool DeviceInputList<TReturn>::addCallbacksForAll(CallbackType callback_type, Callbacks... callbacks) {
+template <typename... CallbacksAndTypes>
+bool DeviceInputList<TReturn>::addCallbacksForAll(CallbackType callback_type, DeviceInputCallback callback, CallbacksAndTypes... callbacks_and_types) {
   bool success = true;
   for (int i = 0; i < this->input_list_size; i++) {
-    success = success && this->device_input_list[i]->addCallbacks(callback_type, callbacks...);
-  }
-  return success;
-}
-
-template <typename TReturn>
-template <uint8_t Size>
-bool DeviceInputList<TReturn>::addCallbacksForAll(CallbackType callback_type, DeviceInputCallback (&callback_array)[Size]) {
-  bool success = true;
-  for (int i = 0; i < Size; i++) {
-    success = success && this->device_input_list[i]->addCallbacks(callback_type, callback_array);
+    success = success && this->device_input_list[i]->addCallbacks(callback_type, callback, callbacks_and_types...);
   }
   return success;
 }
@@ -176,21 +166,11 @@ bool DeviceInputList<TReturn>::setCallbackForAll(CallbackType callback_type, Dev
 }
 
 template <typename TReturn>
-template <typename... Callbacks>
-bool DeviceInputList<TReturn>::setCallbacksForAll(CallbackType callback_type, Callbacks... callbacks) {
+template <typename... CallbacksAndTypes>
+bool DeviceInputList<TReturn>::setCallbacksForAll(CallbackType callback_type, DeviceInputCallback callback, CallbacksAndTypes... callbacks_and_types) {
   bool success = true;
   for (int i = 0; i < this->input_list_size; i++) {
-    success = success && this->device_input_list[i]->setCallbacks(callback_type, callbacks...);
-  }
-  return success;
-}
-
-template <typename TReturn>
-template <uint8_t Size>
-bool DeviceInputList<TReturn>::setCallbacksForAll(CallbackType callback_type, DeviceInputCallback (&callback_array)[Size]) {
-  bool success = true;
-  for (int i = 0; i < Size; i++) {
-    success = success && this->device_input_list[i]->setCallbacks(callback_type, callback_array);
+    success = success && this->device_input_list[i]->setCallbacks(callback_type, callback, callbacks_and_types...);
   }
   return success;
 }
@@ -205,64 +185,10 @@ bool DeviceInputList<TReturn>::clearCallbacksForAll(CallbackType callback_type) 
 }
 
 template <typename TReturn>
-bool DeviceInputList<TReturn>::addToggleCallbacksForAll(DeviceInputCallback toggle_callback, DeviceInputCallback untoggle_callback) {
-  bool success = false;
-  for (uint8_t i = 0; i < this->input_list_size; i++) {
-    success = success && this->device_input_list[i]->addToggleCallbacks(toggle_callback, untoggle_callback);
-  }
-  return success;
-}
-
-template <typename TReturn>
 bool DeviceInputList<TReturn>::clearCallbacksForAll() {
   bool success = false;
   for (uint8_t i = 0; i < this->input_list_size; i++) {
     success = success || this->device_input_list[i]->clearCallbacks();
-  }
-  return success;
-}
-
-template <typename TReturn>
-bool DeviceInputList<TReturn>::setToggleCallbacksForAll(DeviceInputCallback toggle_callback, DeviceInputCallback untoggle_callback) {
-  bool success = false;
-  for (uint8_t i = 0; i < this->input_list_size; i++) {
-    success = success && this->device_input_list[i]->setToggleCallbacks(toggle_callback, untoggle_callback);
-  }
-  return success;
-}
-
-template <typename TReturn>
-bool DeviceInputList<TReturn>::addDetectedCallbacksForAll(DeviceInputCallback detected_callback, DeviceInputCallback undetected_callback) {
-  bool success = false;
-  for (uint8_t i = 0; i < this->input_list_size; i++) {
-    success = success && this->device_input_list[i]->addDetectedCallbacks(detected_callback, undetected_callback);
-  }
-  return success;
-}
-
-template <typename TReturn>
-bool DeviceInputList<TReturn>::setDetectedCallbacksForAll(DeviceInputCallback detected_callback, DeviceInputCallback undetected_callback) {
-  bool success = false;
-  for (uint8_t i = 0; i < this->input_list_size; i++) {
-    success = success && this->device_input_list[i]->setDetectedCallbacks(detected_callback, undetected_callback);
-  }
-  return success;
-}
-
-template <typename TReturn>
-bool DeviceInputList<TReturn>::addReadingCallbacksForAll(DeviceInputCallback rising_reading_callback, DeviceInputCallback falling_reading_callback) {
-  bool success = false;
-  for (uint8_t i = 0; i < this->input_list_size; i++) {
-    success = success && this->device_input_list[i]->addReadingCallbacks(rising_reading_callback, falling_reading_callback);
-  }
-  return success;
-}
-
-template <typename TReturn>
-bool DeviceInputList<TReturn>::setReadingCallbacksForAll(DeviceInputCallback rising_reading_callback, DeviceInputCallback falling_reading_callback) {
-  bool success = false;
-  for (uint8_t i = 0; i < this->input_list_size; i++) {
-    success = success && this->device_input_list[i]->setReadingCallbacks(rising_reading_callback, falling_reading_callback);
   }
   return success;
 }
