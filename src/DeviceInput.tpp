@@ -1,21 +1,41 @@
 template <typename TReturn>
-DeviceInput<TReturn>::DeviceInput(InputFunction input_function, TReturn detection_exact, int update_interval_ms) {
+template <typename... CallbacksAndTypes>
+DeviceInput<TReturn>::DeviceInput(InputFunction input_function, TReturn detection_exact, int update_interval_ms, CallbacksAndTypes... callbacks_and_types) {
   this->setInputFunction(input_function);
   this->setDetectionExact(detection_exact);
   this->setUpdateInterval(update_interval_ms);
+  this->setCallbacks(callbacks_and_types...);
 }
 
 template <typename TReturn>
-DeviceInput<TReturn>::DeviceInput(InputFunction input_function, TReturn detection_range[2], int update_interval_ms) {
+template <typename... CallbacksAndTypes>
+DeviceInput<TReturn>::DeviceInput(InputFunction input_function, TReturn detection_exact, CallbacksAndTypes... callbacks_and_types) {
+  this->setInputFunction(input_function);
+  this->setDetectionExact(detection_exact);
+  this->setCallbacks(callbacks_and_types...);
+}
+
+template <typename TReturn>
+template <typename... CallbacksAndTypes>
+DeviceInput<TReturn>::DeviceInput(InputFunction input_function, TReturn detection_range[2], int update_interval_ms, CallbacksAndTypes... callbacks_and_types) {
   this->setInputFunction(input_function);
   this->setDetectionRange(detection_range);
   this->setUpdateInterval(update_interval_ms);
+  this->setCallbacks(callbacks_and_types...);
+}
+
+template <typename TReturn>
+template <typename... CallbacksAndTypes>
+DeviceInput<TReturn>::DeviceInput(InputFunction input_function, TReturn detection_range[2], CallbacksAndTypes... callbacks_and_types) {
+  this->setInputFunction(input_function);
+  this->setDetectionRange(detection_range);
+  this->setCallbacks(callbacks_and_types...);
 }
 
 template <typename TReturn>
 void DeviceInput<TReturn>::setInputFunction(InputFunction input_function) {
   this->input_function = input_function;
-  this->reading = this->input_function();
+  this->updateReading();
 }
 
 template <typename TReturn>
