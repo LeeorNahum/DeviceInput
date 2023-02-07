@@ -26,14 +26,13 @@ class DeviceInputCallbacks {
     bool hasCallbacks();
     bool hasCallbacks(CallbackType callback_type);
     
-    // TODO add addCallbacks which replaces the addToggleCallback methods https://chat.openai.com/chat/67ef9ae1-6e23-49e2-8cc0-65ff2ae118f0
     bool addCallback(CallbackType callback_type, DeviceInputCallback callback);
     template <typename... CallbacksAndTypes>
     bool addCallbacks(CallbackType callback_type, DeviceInputCallback callback, CallbacksAndTypes... callbacks_and_types);
     
     bool setCallback(CallbackType callback_type, DeviceInputCallback callback);
     template <typename... CallbacksAndTypes>
-    bool setCallbacks(CallbackType callback_type, DeviceInputCallback callback, CallbacksAndTypes... callbacks_and_types);
+    bool setCallbacks(CallbacksAndTypes... callbacks_and_types);
 
     bool clearCallbacks(CallbackType callback_type);
     bool clearCallbacks();
@@ -61,10 +60,7 @@ class DeviceInputCallbacks {
     template <typename... CallbacksAndTypes>
     bool addCallbacks(CallbackType callback_type, CallbackType new_callback_type, CallbacksAndTypes... callbacks_and_types);
     bool addCallbacks(CallbackType callback_type);
-    
-    template <typename... CallbacksAndTypes>
-    bool setCallbacks(CallbackType callback_type, CallbackType new_callback_type, CallbacksAndTypes... callbacks_and_types);
-    bool setCallbacks(CallbackType callback_type);
+    bool addCallbacks();
 
     DeviceInputCallback toggle_callbacks[MAX_CALLBACK_ARRAY_SIZE] = {nullptr};
     uint8_t num_toggle_callbacks = 0;

@@ -62,28 +62,19 @@ bool DeviceInputCallbacks::addCallbacks(CallbackType callback_type) {
   return true;
 }
 
+bool DeviceInputCallbacks::addCallbacks() {
+  return true;
+}
+
 bool DeviceInputCallbacks::setCallback(CallbackType callback_type, DeviceInputCallback callback) {
-  this->clearCallbacks(callback_type);
+  this->clearCallbacks();
   return this->addCallback(callback_type, callback);
 }
 
 template <typename... CallbacksAndTypes>
-bool DeviceInputCallbacks::setCallbacks(CallbackType callback_type, DeviceInputCallback callback, CallbacksAndTypes... callbacks_and_types) {
-  bool success = true;
-  
-  success = success && setCallback(callback_type, callback);
-  success = success && setCallbacks(callback_type, callbacks_and_types...);
-  
-  return success;
-}
-
-template <typename... CallbacksAndTypes>
-bool DeviceInputCallbacks::setCallbacks(CallbackType callback_type, CallbackType new_callback_type, CallbacksAndTypes... callbacks_and_types) {
-  return setCallbacks(new_callback_type, callbacks_and_types...);
-}
-
-bool DeviceInputCallbacks::setCallbacks(CallbackType callback_type) {
-  return true;
+bool DeviceInputCallbacks::setCallbacks(CallbacksAndTypes... callbacks_and_types) {
+  this->clearCallbacks();
+  return addCallbacks(callbacks_and_types...);
 }
 
 bool DeviceInputCallbacks::clearCallbacks(CallbackType callback_type) {
