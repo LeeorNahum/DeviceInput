@@ -19,13 +19,13 @@ DeviceInputList<TReturn>::DeviceInputList(DeviceInputs*... device_inputs) {
 
 template <typename TReturn>
 template <uint8_t Size>
-DeviceInputList<TReturn>::DeviceInputList(DeviceInputType* (&device_input_array)[Size], int update_interval_ms) {
+DeviceInputList<TReturn>::DeviceInputList(DeviceInputType (&device_input_array)[Size], int update_interval_ms) {
   this->setDeviceInputs(device_input_array);
   this->setUpdateInterval(update_interval_ms);
 }
 
 template <typename TReturn>
-bool DeviceInputList<TReturn>::addDeviceInput(DeviceInputType* device_input) {
+bool DeviceInputList<TReturn>::addDeviceInput(DeviceInputType device_input) {
   if (this->input_list_size >= MAX_INPUT_LIST_ARRAY_SIZE) {
     return false;
   }
@@ -36,7 +36,7 @@ bool DeviceInputList<TReturn>::addDeviceInput(DeviceInputType* device_input) {
 
 template <typename TReturn>
 template <typename... DeviceInputs>
-bool DeviceInputList<TReturn>::addDeviceInputs(DeviceInputType* device_input, DeviceInputs*... device_inputs) {
+bool DeviceInputList<TReturn>::addDeviceInputs(DeviceInputType device_input, DeviceInputs*... device_inputs) {
   bool success = true;
   
   success = success && addDeviceInput(device_input);
@@ -52,7 +52,7 @@ bool DeviceInputList<TReturn>::addDeviceInputs() {
 
 template <typename TReturn>
 template <uint8_t Size>
-bool DeviceInputList<TReturn>::addDeviceInputs(DeviceInputType* (&device_input_array)[Size]) {
+bool DeviceInputList<TReturn>::addDeviceInputs(DeviceInputType (&device_input_array)[Size]) {
   bool success = true;
 
   for (uint8_t i = 0; i < Size; i++) {
@@ -63,7 +63,7 @@ bool DeviceInputList<TReturn>::addDeviceInputs(DeviceInputType* (&device_input_a
 }
 
 template <typename TReturn>
-bool DeviceInputList<TReturn>::setDeviceInput(DeviceInputType* device_input) {
+bool DeviceInputList<TReturn>::setDeviceInput(DeviceInputType device_input) {
   this->clearDeviceInputs();
   return this->addDeviceInput(device_input);
 }
@@ -77,7 +77,7 @@ bool DeviceInputList<TReturn>::setDeviceInputs(DeviceInputs*... device_inputs) {
 
 template <typename TReturn>
 template <uint8_t Size>
-bool DeviceInputList<TReturn>::setDeviceInputs(DeviceInputType* (&device_input_array)[Size]) {
+bool DeviceInputList<TReturn>::setDeviceInputs(DeviceInputType (&device_input_array)[Size]) {
   this->clearDeviceInputs();
   return this->addDeviceInputs(device_input_array);
 }
@@ -162,10 +162,10 @@ bool DeviceInputList<TReturn>::addCallbackForAll(CallbackType callback_type, Dev
 
 template <typename TReturn>
 template <typename... CallbacksAndTypes>
-bool DeviceInputList<TReturn>::addCallbacksForAll(CallbackType callback_type, DeviceInputCallback callback, CallbacksAndTypes... callbacks_and_types) {
+bool DeviceInputList<TReturn>::addCallbacksForAll(CallbacksAndTypes... callbacks_and_types) {
   bool success = true;
   for (int i = 0; i < this->input_list_size; i++) {
-    success = success && this->device_input_list[i]->addCallbacks(callback_type, callback, callbacks_and_types...);
+    success = success && this->device_input_list[i]->addCallbacks(callbacks_and_types...);
   }
   return success;
 }
@@ -181,10 +181,10 @@ bool DeviceInputList<TReturn>::setCallbackForAll(CallbackType callback_type, Dev
 
 template <typename TReturn>
 template <typename... CallbacksAndTypes>
-bool DeviceInputList<TReturn>::setCallbacksForAll(CallbackType callback_type, DeviceInputCallback callback, CallbacksAndTypes... callbacks_and_types) {
+bool DeviceInputList<TReturn>::setCallbacksForAll(CallbacksAndTypes... callbacks_and_types) {
   bool success = true;
   for (int i = 0; i < this->input_list_size; i++) {
-    success = success && this->device_input_list[i]->setCallbacks(callback_type, callback, callbacks_and_types...);
+    success = success && this->device_input_list[i]->setCallbacks(callbacks_and_types...);
   }
   return success;
 }
