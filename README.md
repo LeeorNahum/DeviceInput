@@ -3,7 +3,8 @@
 An Arduino library for creating hardware or software inputs with customizable callbacks, detection ranges, and update intervals.
 
 ## Table of Contents
-- [Overview](#overview)
+
+- [Description](#description)
 - [Library Capabilities](#library-capabilities)
   - [DeviceInput](#deviceinput)
     - [DeviceInputCallbacks](#deviceinputcallbacks)
@@ -18,10 +19,11 @@ An Arduino library for creating hardware or software inputs with customizable ca
     - [General example of all library capabilities](#general-example-of-all-library-capabilities)
     - [Example of callbacks](#example-of-callbacks)
 
-# Overview
+## Description
+
 The DeviceInput library provides an easy way to add hardware or software inputs to your project. It allows you to set callbacks for different input states and conditions. You can also set detection ranges and update intervals for the inputs. The library includes a DeviceInputList class for managing multiple DeviceInputs.
 
-# Library Capabilities
+## Library Capabilities
 
 ## DeviceInput
 
@@ -32,7 +34,7 @@ Update the input reading
 Get the current and last readings
 Check if the input is detected or undetected, rising or falling
 Invert the detection
-- Get the toggle and untoggle timestamps
+Get the toggle and untoggle timestamps
 Get the elapsed time for detection and undetection
 Update the input state
 
@@ -66,11 +68,12 @@ Update the input state
 - Add, remove, or retrieve DeviceInput objects from the list
 - Sort the list based on various criteria such as detection state or elapsed time
 
-# Examples
+## Examples
 
 ## Simple Examples
 
 ### Creating a DeviceInput with an input function, detection exact and update interval
+
 ``` C++
 #include <DeviceInput.h>
 
@@ -82,6 +85,7 @@ DeviceInput<int> button(getButtonState, 1, 100);
 ```
 
 ### Creating a DeviceInput with an input function, detection range and update interval
+
 ``` C++
 #include <DeviceInput.h>
 
@@ -94,6 +98,7 @@ DeviceInput<int> sensor(getSensorValue, range, 100);
 ```
 
 ### Adding a callback for toggled state
+
 ``` C++
 #include <DeviceInput.h>
 
@@ -106,6 +111,7 @@ button.addCallback(TOGGLED, toggleCallback);
 ```
 
 ### Adding multiple callbacks for different states
+
 ``` C++
 #include <DeviceInput.h>
 
@@ -122,21 +128,27 @@ button.addCallbacks(TOGGLED, toggleCallback, UNTOGGLED, untoggleCallback);
 ```
 
 ### Clearing callbacks
+
 You can clear all callbacks for a button:
+
 ``` C++
 Button button;
 button.clearCallbacks();
 ```
 
 ### Running Callbacks
+
 You can run all callbacks for a button:
+
 ``` C++
 Button button;
 button.runCallbacks();
 ```
 
 ### Disabling and Enabling Callbacks
+
 You can temporarily disable callbacks for a button:
+
 ``` C++
 Button button;
 button.disableCallbacks();
@@ -146,6 +158,7 @@ button.runCallbacks(); // callbacks will be executed again
 ```
 
 ### Initializing a DeviceInputList
+
 ``` C++
 // Initialize an empty DeviceInputList with an update interval of 100ms
 DeviceInputList<> list1(100);
@@ -164,6 +177,7 @@ DeviceInputList<> list4(deviceArray, 100);
 ```
 
 ### Adding and setting DeviceInput objects in a DeviceInputList
+
 ``` C++
 // Adding a single DeviceInput object to a DeviceInputList
 DeviceInput device7;
@@ -187,16 +201,19 @@ list1.setDeviceInputs(deviceArray2);
 ```
 
 ### Updating the values of all DeviceInput objects in a DeviceInputList
+
 ``` C++
 list1.updateAll();
 ```
 
 ### Setting update interval for a DeviceInputList
+
 ``` C++
 list1.setUpdateInterval(50);
 ```
 
 ### Adding and setting callbacks for all DeviceInput objects in a DeviceInputList
+
 ``` C++
 // Adding a single callback for all DeviceInput objects in a DeviceInputList
 list1.addCallbackForAll(CallbackType::Toggle, toggleCallback1);
@@ -222,6 +239,7 @@ list1.setCallbacksForAll(CallbackType::Toggle, toggleCallbackArray2);
 ## Complex Examples
 
 ### General example of all library capabilities
+
 ``` C++
 #include <DeviceInput.h>
 
@@ -246,6 +264,7 @@ void loop() {
 ```
 
 ### Example of callbacks
+
 ``` C++
 #include <DeviceInput.h>
 
