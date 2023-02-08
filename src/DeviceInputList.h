@@ -16,13 +16,14 @@ class DeviceInputList {
   public:
     using DeviceInputType = DeviceInput<TReturn>*;
 
-    DeviceInputList(int update_interval_ms = 0); // TODO improve the constructors to move upade_interval_ms after device_inputs and maybe add callbacks
     template <typename... DeviceInputs>
-    DeviceInputList(int update_interval_ms, DeviceInputs*... device_inputs);
+    DeviceInputList(int update_interval_ms = 0, DeviceInputs*... device_inputs);
     template <typename... DeviceInputs>
     DeviceInputList(DeviceInputs*... device_inputs);
-    template <uint8_t Size>
-    DeviceInputList(DeviceInputType (&device_input_array)[Size], int update_interval_ms = 0);
+    template <uint8_t Size, typename... CallbacksAndTypes>
+    DeviceInputList(DeviceInputType (&device_input_array)[Size], int update_interval_ms = 0, CallbacksAndTypes... callbacks_and_types);
+    template <uint8_t Size, typename... CallbacksAndTypes>
+    DeviceInputList(DeviceInputType (&device_input_array)[Size], CallbacksAndTypes... callbacks_and_types);
 
     bool addDeviceInput(DeviceInputType device_input);
     template <typename... DeviceInputs>

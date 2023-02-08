@@ -1,10 +1,4 @@
 template <typename TReturn>
-DeviceInputList<TReturn>::DeviceInputList(int update_interval_ms) {
-  this->clearDeviceInputs();
-  this->setUpdateInterval(update_interval_ms);
-}
-
-template <typename TReturn>
 template <typename... DeviceInputs>
 DeviceInputList<TReturn>::DeviceInputList(int update_interval_ms, DeviceInputs*... device_inputs) {
   this->setUpdateInterval(update_interval_ms);
@@ -18,10 +12,18 @@ DeviceInputList<TReturn>::DeviceInputList(DeviceInputs*... device_inputs) {
 }
 
 template <typename TReturn>
-template <uint8_t Size>
-DeviceInputList<TReturn>::DeviceInputList(DeviceInputType (&device_input_array)[Size], int update_interval_ms) {
+template <uint8_t Size, typename... CallbacksAndTypes>
+DeviceInputList<TReturn>::DeviceInputList(DeviceInputType (&device_input_array)[Size], int update_interval_ms, CallbacksAndTypes... callbacks_and_types) {
   this->setDeviceInputs(device_input_array);
   this->setUpdateInterval(update_interval_ms);
+  this->addCallbacksForAll(callbacks_and_types...);
+}
+
+template <typename TReturn>
+template <uint8_t Size, typename... CallbacksAndTypes>
+DeviceInputList<TReturn>::DeviceInputList(DeviceInputType (&device_input_array)[Size], CallbacksAndTypes... callbacks_and_types) {
+  this->setDeviceInputs(device_input_array);
+  this->addCallbacksForAll(callbacks_and_types...);
 }
 
 template <typename TReturn>
