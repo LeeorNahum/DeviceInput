@@ -9,11 +9,14 @@ template <typename TReturn>
 class DeviceInput;
 
 template <typename TReturn = int>
+using DeviceInputType = DeviceInput<TReturn>*;
+
+template <typename TReturn = int>
 class DeviceInputList {
   public:
     using DeviceInputType = DeviceInput<TReturn>*;
 
-    DeviceInputList(int update_interval_ms = 0);
+    DeviceInputList(int update_interval_ms = 0); // TODO improve the constructors to move upade_interval_ms after device_inputs and maybe add callbacks
     template <typename... DeviceInputs>
     DeviceInputList(int update_interval_ms, DeviceInputs*... device_inputs);
     template <typename... DeviceInputs>
