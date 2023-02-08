@@ -47,15 +47,15 @@ template <typename... CallbacksAndTypes>
 bool DeviceInputCallbacks::addCallbacks(CallbackType callback_type, DeviceInputCallback callback, CallbacksAndTypes... callbacks_and_types) {
   bool success = true;
   
-  success = success && addCallback(callback_type, callback);
-  success = success && addCallbacks(callback_type, callbacks_and_types...);
+  success = success && this->addCallback(callback_type, callback);
+  success = success && this->addCallbacks(callback_type, callbacks_and_types...);
   
   return success;
 }
 
 template <typename... CallbacksAndTypes>
 bool DeviceInputCallbacks::addCallbacks(CallbackType callback_type, CallbackType new_callback_type, CallbacksAndTypes... callbacks_and_types) {
-  return addCallbacks(new_callback_type, callbacks_and_types...);
+  return this->addCallbacks(new_callback_type, callbacks_and_types...);
 }
 
 bool DeviceInputCallbacks::addCallbacks(CallbackType callback_type) {
@@ -74,7 +74,7 @@ bool DeviceInputCallbacks::setCallback(CallbackType callback_type, DeviceInputCa
 template <typename... CallbacksAndTypes>
 bool DeviceInputCallbacks::setCallbacks(CallbacksAndTypes... callbacks_and_types) {
   this->clearCallbacks();
-  return addCallbacks(callbacks_and_types...);
+  return this->addCallbacks(callbacks_and_types...);
 }
 
 bool DeviceInputCallbacks::clearCallbacks(CallbackType callback_type) {
