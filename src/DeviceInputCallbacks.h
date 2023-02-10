@@ -39,7 +39,6 @@ class DeviceInputCallbacks {
     
     bool callbackActive(CallbackType callback_type);
     
-    //bool runCallback(CallbackType callback_type);
     bool runCallbacks();
     
   protected:
