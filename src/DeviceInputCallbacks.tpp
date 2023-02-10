@@ -24,22 +24,20 @@ bool DeviceInputCallbacks::hasCallbacks() {
 }
 
 bool DeviceInputCallbacks::hasCallbacks(CallbackType callback_type) {
-  DeviceInputCallback* callback_array;
-  uint8_t* num_callbacks;
-  this->getCallbackPointers(callback_type, &callback_array, &num_callbacks);
+  CallbackArray* callback_array = this->getCallbackArray(callback_type);
   
-  return *num_callbacks > 0;
+  return callback_array->num_callbacks > 0;
 }
 
 bool DeviceInputCallbacks::addCallback(CallbackType callback_type, DeviceInputCallback callback) {
-  DeviceInputCallback* callback_array;
-  uint8_t* num_callbacks;
-  this->getCallbackPointers(callback_type, &callback_array, &num_callbacks);
+  CallbackArray* callback_array = this->getCallbackArray(callback_type);
   
-  if (*num_callbacks >= MAX_CALLBACK_ARRAY_SIZE) {
+  if (callback_array->num_callbacks >= MAX_CALLBACK_ARRAY_SIZE) {
     return false;
   }
-  callback_array[(*num_callbacks)++] = callback;
+  
+  callback_array->callbacks[callback_array->num_callbacks++] = callback;
+  
   return true;
 }
 
@@ -78,18 +76,16 @@ bool DeviceInputCallbacks::setCallbacks(CallbacksAndTypes... callbacks_and_types
 }
 
 bool DeviceInputCallbacks::clearCallbacks(CallbackType callback_type) {
-  DeviceInputCallback* callback_array;
-  uint8_t* num_callbacks;
-  this->getCallbackPointers(callback_type, &callback_array, &num_callbacks);
+  CallbackArray* callback_array = this->getCallbackArray(callback_type);
   
-  if (*num_callbacks == 0) {
+  if (callback_array->num_callbacks == 0) {
     return false;
   }
   
   for (uint8_t i = 0; i < MAX_CALLBACK_ARRAY_SIZE; i++) {
-    callback_array[i] = nullptr;
+    callback_array->callbacks[i] = nullptr;
   }
-  *num_callbacks = 0;
+  callback_array->num_callbacks = 0;
   return true;
 }
 
@@ -101,24 +97,41 @@ bool DeviceInputCallbacks::clearCallbacks() {
   return success;
 }
 
+bool DeviceInputCallbacks::callbackActive(CallbackType callback_type) {
+  switch (callback_type) {
+    case TOGGLE:
+      return this->getToggled();
+    case UNTOGGLE:
+      return this->getUntoggled();
+    case DETECTED:
+      return this->getDetected();
+    case UNDETECTED:
+      return this->getUndetected();
+    case RISING_READING:
+      return this->getRisingReading();
+    case FALLING_READING:
+      return this->getFallingReading();
+    default:
+      return false;
+  }
+}
+
 bool DeviceInputCallbacks::runCallbacks() {
   if (this->callbacksDisabled()) {
     return false;
   }
-  
+
   bool callback_ran = false;
 
   for (CallbackType callback_type : callbackTypes) {
-    DeviceInputCallback* callback_array;
-    uint8_t* num_callbacks;
-    bool can_run_callback = this->getCallbackPointers(callback_type, &callback_array, &num_callbacks);
+    CallbackArray* callback_array = this->getCallbackArray(callback_type);
 
-    if (!can_run_callback || *num_callbacks == 0) {
+    if (callback_array->num_callbacks == 0 || !this->callbackActive(callback_type)) {
       continue;
     }
-    
-    for (uint8_t i = 0; i < *num_callbacks; i++) {
-      callback_array[i]();
+
+    for (uint8_t i = 0; i < callback_array->num_callbacks; i++) {
+      callback_array->callbacks[i]();
       callback_ran = true;
     }
   }
@@ -126,31 +139,21 @@ bool DeviceInputCallbacks::runCallbacks() {
   return callback_ran;
 }
 
-bool DeviceInputCallbacks::getCallbackPointers(CallbackType callback_type, DeviceInputCallback** callback_array, uint8_t** num_callbacks) {
+DeviceInputCallbacks::CallbackArray* DeviceInputCallbacks::getCallbackArray(CallbackType callback_type) {
   switch (callback_type) {
     case TOGGLE:
-      *callback_array = this->toggle_callbacks;
-      *num_callbacks = &this->num_toggle_callbacks;
-      return this->getToggled();
+      return &this->toggle_callbacks;
     case UNTOGGLE:
-      *callback_array = this->untoggle_callbacks;
-      *num_callbacks = &this->num_untoggle_callbacks;
-      return this->getUntoggled();
+      return &this->untoggle_callbacks;
     case DETECTED:
-      *callback_array = this->detected_callbacks;
-      *num_callbacks = &this->num_detected_callbacks;
-      return this->getDetected();
+      return &this->detected_callbacks;
     case UNDETECTED:
-      *callback_array = this->undetected_callbacks;
-      *num_callbacks = &this->num_undetected_callbacks;
-      return this->getUndetected();
+      return &this->undetected_callbacks;
     case RISING_READING:
-      *callback_array = this->rising_reading_callbacks;
-      *num_callbacks = &this->num_rising_reading_callbacks;
-      return this->getRisingReading();
+      return &this->rising_reading_callbacks;
     case FALLING_READING:
-      *callback_array = this->falling_reading_callbacks;
-      *num_callbacks = &this->num_falling_reading_callbacks;
-      return this->getFallingReading();
+      return &this->falling_reading_callbacks;
+    default:
+      return nullptr;
   }
 }

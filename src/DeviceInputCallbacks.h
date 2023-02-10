@@ -37,11 +37,13 @@ class DeviceInputCallbacks {
     bool clearCallbacks(CallbackType callback_type);
     bool clearCallbacks();
     
+    bool callbackActive(CallbackType callback_type);
+    
     //bool runCallback(CallbackType callback_type);
     bool runCallbacks();
     
   protected:
-    virtual bool getRisingReading() = 0;
+    virtual bool getRisingReading() = 0; // TODO ? update to return bool instead of returning a comparison every time
     virtual bool getFallingReading() = 0;
     
     virtual bool getDetected() = 0;
@@ -55,30 +57,25 @@ class DeviceInputCallbacks {
     
     const CallbackType callbackTypes[6] = {TOGGLE, UNTOGGLE, DETECTED, UNDETECTED, RISING_READING, FALLING_READING};
     
-    bool getCallbackPointers(CallbackType callback_type, DeviceInputCallback** callbacks_array, uint8_t** num_callbacks);
+    struct CallbackArray {
+      DeviceInputCallback callbacks[MAX_CALLBACK_ARRAY_SIZE] = {nullptr};
+      uint8_t num_callbacks = 0;
+    };
+
+    CallbackArray toggle_callbacks;
+    CallbackArray untoggle_callbacks;
+    CallbackArray detected_callbacks;
+    CallbackArray undetected_callbacks;
+    CallbackArray rising_reading_callbacks;
+    CallbackArray falling_reading_callbacks;
+    
+    //bool getCallbackArray(CallbackType callback_type, DeviceInputCallback** callbacks_array, uint8_t** num_callbacks);
+    CallbackArray* getCallbackArray(CallbackType callback_type);
     
     template <typename... CallbacksAndTypes>
     bool addCallbacks(CallbackType callback_type, CallbackType new_callback_type, CallbacksAndTypes... callbacks_and_types);
     bool addCallbacks(CallbackType callback_type);
     bool addCallbacks();
-
-    DeviceInputCallback toggle_callbacks[MAX_CALLBACK_ARRAY_SIZE] = {nullptr};
-    uint8_t num_toggle_callbacks = 0;
-
-    DeviceInputCallback untoggle_callbacks[MAX_CALLBACK_ARRAY_SIZE] = {nullptr};
-    uint8_t num_untoggle_callbacks = 0;
-
-    DeviceInputCallback detected_callbacks[MAX_CALLBACK_ARRAY_SIZE] = {nullptr};
-    uint8_t num_detected_callbacks = 0;
-
-    DeviceInputCallback undetected_callbacks[MAX_CALLBACK_ARRAY_SIZE] = {nullptr};
-    uint8_t num_undetected_callbacks = 0;
-
-    DeviceInputCallback rising_reading_callbacks[MAX_CALLBACK_ARRAY_SIZE] = {nullptr};
-    uint8_t num_rising_reading_callbacks = 0;
-
-    DeviceInputCallback falling_reading_callbacks[MAX_CALLBACK_ARRAY_SIZE] = {nullptr};
-    uint8_t num_falling_reading_callbacks = 0;
 };
 
 #include "DeviceInputCallbacks.tpp"
