@@ -68,7 +68,6 @@ class DeviceInputCallbacks {
     CallbackArray rising_reading_callbacks;
     CallbackArray falling_reading_callbacks;
     
-    //bool getCallbackArray(CallbackType callback_type, DeviceInputCallback** callbacks_array, uint8_t** num_callbacks);
     CallbackArray* getCallbackArray(CallbackType callback_type);
     
     template <typename... CallbacksAndTypes>
