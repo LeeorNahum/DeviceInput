@@ -2,6 +2,7 @@
 #define DEVICEINPUT_H
 
 #include <stdint.h>
+
 #include "DeviceInputCallbacks.h"
 #include "DeviceInputList.h"
 
