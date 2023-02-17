@@ -5,7 +5,7 @@
 #define MAX_CALLBACK_ARRAY_SIZE 3
 #endif
 
-enum CallbackType {
+enum class CallbackType {
   TOGGLE,
   UNTOGGLE,
   DETECTED,
