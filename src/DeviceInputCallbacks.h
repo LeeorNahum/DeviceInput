@@ -54,7 +54,7 @@ class DeviceInputCallbacks {
   private:
     bool callbacks_disabled = false;
     
-    const CallbackType callbackTypes[6] = {TOGGLE, UNTOGGLE, DETECTED, UNDETECTED, RISING_READING, FALLING_READING};
+    const CallbackType callbackTypes[6] = {CallbackType::TOGGLE, CallbackType::UNTOGGLE, CallbackType::DETECTED, CallbackType::UNDETECTED, CallbackType::RISING_READING, CallbackType::FALLING_READING};
     
     struct CallbackArray {
       DeviceInputCallback callbacks[MAX_CALLBACK_ARRAY_SIZE] = {nullptr};

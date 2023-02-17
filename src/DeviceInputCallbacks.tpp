@@ -99,17 +99,17 @@ bool DeviceInputCallbacks::clearCallbacks() {
 
 bool DeviceInputCallbacks::callbackActive(CallbackType callback_type) {
   switch (callback_type) {
-    case TOGGLE:
+    case CallbackType::TOGGLE:
       return this->getToggled();
-    case UNTOGGLE:
+    case CallbackType::UNTOGGLE:
       return this->getUntoggled();
-    case DETECTED:
+    case CallbackType::DETECTED:
       return this->getDetected();
-    case UNDETECTED:
+    case CallbackType::UNDETECTED:
       return this->getUndetected();
-    case RISING_READING:
+    case CallbackType::RISING_READING:
       return this->getRisingReading();
-    case FALLING_READING:
+    case CallbackType::FALLING_READING:
       return this->getFallingReading();
     default:
       return false;
@@ -141,17 +141,17 @@ bool DeviceInputCallbacks::runCallbacks() {
 
 DeviceInputCallbacks::CallbackArray* DeviceInputCallbacks::getCallbackArray(CallbackType callback_type) {
   switch (callback_type) {
-    case TOGGLE:
+    case CallbackType::TOGGLE:
       return &this->toggle_callbacks;
-    case UNTOGGLE:
+    case CallbackType::UNTOGGLE:
       return &this->untoggle_callbacks;
-    case DETECTED:
+    case CallbackType::DETECTED:
       return &this->detected_callbacks;
-    case UNDETECTED:
+    case CallbackType::UNDETECTED:
       return &this->undetected_callbacks;
-    case RISING_READING:
+    case CallbackType::RISING_READING:
       return &this->rising_reading_callbacks;
-    case FALLING_READING:
+    case CallbackType::FALLING_READING:
       return &this->falling_reading_callbacks;
     default:
       return nullptr;
