@@ -7,7 +7,7 @@
 #include "DeviceInputList.h"
 
 template <typename TReturn = int>
-class DeviceInput: public DeviceInputCallbacks {
+class DeviceInput: public DeviceInputCallbacks { // TODO add addition operator which returns an inputlist if deviceinputs are added together
   public:
     using InputFunction = TReturn (*)();
     
