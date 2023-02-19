@@ -2,12 +2,13 @@
 #define DEVICEINPUT_H
 
 #include <stdint.h>
+#include <wiring.c>
 
 #include "DeviceInputCallbacks.h"
 #include "DeviceInputList.h"
 
 template <typename TReturn = int>
-class DeviceInput: public DeviceInputCallbacks { // TODO add addition operator which returns an inputlist if deviceinputs are added together
+class DeviceInput: public DeviceInputCallbacks {
   public:
     using InputFunction = TReturn (*)();
     
@@ -31,7 +32,7 @@ class DeviceInput: public DeviceInputCallbacks { // TODO add addition operator w
     void setUpdateInterval(int update_interval_ms = 0);
     int getUpdateInterval();
 
-    void updateReading();
+    void updateReading() override;
     TReturn getReading();
     TReturn getLastReading();
     
@@ -40,7 +41,7 @@ class DeviceInput: public DeviceInputCallbacks { // TODO add addition operator w
     
     void invertDetected(bool invert = true);
     
-    bool updateDetected();
+    bool updateDetected() override;
     bool getDetected() override;
     bool getLastDetected();
     bool getUndetected() override;
