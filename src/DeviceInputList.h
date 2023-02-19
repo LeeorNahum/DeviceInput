@@ -5,17 +5,10 @@
 #define MAX_INPUT_LIST_ARRAY_SIZE 12
 #endif
 
-template <typename TReturn>
-class DeviceInput;
+using DeviceInputType = DeviceInputCallbacks*;
 
-template <typename TReturn = int>
-using DeviceInputType = DeviceInput<TReturn>*;
-
-template <typename TReturn = int>
-class DeviceInputList { // TODO If the base class has no templates, then the derived classes that you create can have templates, and you can still use an array of pointers to the base class to hold the derived objects.
+class DeviceInputList {
   public:
-    using DeviceInputType = DeviceInput<TReturn>*;
-
     template <typename... DeviceInputs>
     DeviceInputList(int update_interval_ms = 0, DeviceInputs*... device_inputs);
     template <typename... DeviceInputs>
@@ -44,7 +37,7 @@ class DeviceInputList { // TODO If the base class has no templates, then the der
     void setUpdateInterval(int update_interval_ms = 0);
     int getUpdateInterval();
 
-    DeviceInputType* getList();
+    DeviceInputType* getDeviceInputList();
     DeviceInputType getDeviceInput(uint8_t index);
 
     void updateReadingForAll();
