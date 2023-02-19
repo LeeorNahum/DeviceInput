@@ -216,24 +216,24 @@ list1.setUpdateInterval(50);
 
 ``` C++
 // Adding a single callback for all DeviceInput objects in a DeviceInputList
-list1.addCallbackForAll(CallbackType::Toggle, toggleCallback1);
+list1.addCallbackForAll(Toggle, toggleCallback1);
 
 // Adding multiple callbacks for all DeviceInput objects in a DeviceInputList
-list1.addCallbacksForAll(CallbackType::Toggle, toggleCallback2, toggleCallback3);
+list1.addCallbacksForAll(Toggle, toggleCallback2, toggleCallback3);
 
 // Adding multiple callbacks for all DeviceInput objects in a DeviceInputList using an array
 void toggleCallbackArray[2] = {toggleCallback4, toggleCallback5};
-list1.addCallbacksForAll(CallbackType::Toggle, toggleCallbackArray);
+list1.addCallbacksForAll(Toggle, toggleCallbackArray);
 
 // Setting a single callback for all DeviceInput objects in a DeviceInputList
-list1.setCallbackForAll(CallbackType::Toggle, toggleCallback6);
+list1.setCallbackForAll(Toggle, toggleCallback6);
 
 // Setting multiple callbacks for all DeviceInput objects in a DeviceInputList
-list1.setCallbacksForAll(CallbackType::Toggle, toggleCallback7, toggleCallback8);
+list1.setCallbacksForAll(Toggle, toggleCallback7, toggleCallback8);
 
 // Setting multiple callbacks for all DeviceInput objects in a DeviceInputList using an array
 void toggleCallbackArray2[2] = {toggleCallback9, toggleCallback10};
-list1.setCallbacksForAll(CallbackType::Toggle, toggleCallbackArray2);
+list1.setCallbacksForAll(Toggle, toggleCallbackArray2);
 ```
 
 ## Complex Examples
