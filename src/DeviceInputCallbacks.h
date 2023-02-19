@@ -41,6 +41,10 @@ class DeviceInputCallbacks {
     
     bool runCallbacks();
     
+    virtual void updateReading() = 0;
+    virtual bool updateDetected() = 0;
+    virtual bool update() = 0;
+    
   protected:
     virtual bool getRisingReading() = 0; // TODO ? update to return bool instead of returning a comparison every time
     virtual bool getFallingReading() = 0;
