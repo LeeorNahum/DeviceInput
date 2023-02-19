@@ -12,7 +12,7 @@ template <typename TReturn = int>
 using DeviceInputType = DeviceInput<TReturn>*;
 
 template <typename TReturn = int>
-class DeviceInputList {
+class DeviceInputList { // TODO If the base class has no templates, then the derived classes that you create can have templates, and you can still use an array of pointers to the base class to hold the derived objects.
   public:
     using DeviceInputType = DeviceInput<TReturn>*;
 
@@ -22,6 +22,8 @@ class DeviceInputList {
     DeviceInputList(DeviceInputs*... device_inputs);
     template <uint8_t Size, typename... CallbacksAndTypes>
     DeviceInputList(DeviceInputType (&device_input_array)[Size], int update_interval_ms = 0, CallbacksAndTypes... callbacks_and_types);
+    template <uint8_t Size, typename... CallbacksAndTypes>
+    DeviceInputList(int update_interval_ms, DeviceInputType (&device_input_array)[Size], CallbacksAndTypes... callbacks_and_types);
     template <uint8_t Size, typename... CallbacksAndTypes>
     DeviceInputList(DeviceInputType (&device_input_array)[Size], CallbacksAndTypes... callbacks_and_types);
 
@@ -63,8 +65,8 @@ class DeviceInputList {
     bool clearCallbacksForAll();
     
   private:
-    DeviceInputType device_input_list[MAX_INPUT_LIST_ARRAY_SIZE];
-    uint8_t input_list_size;
+    DeviceInputType device_input_list[MAX_INPUT_LIST_ARRAY_SIZE] = {nullptr};
+    uint8_t input_list_size = 0;
     
     int update_interval_ms = 0;
     unsigned long last_update_time = 0;
