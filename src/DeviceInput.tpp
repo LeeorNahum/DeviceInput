@@ -143,9 +143,11 @@ bool DeviceInput<TReturn>::updateDetected() {
   }
   
   if (this->getToggled()) {
+    this->last_toggle_timestamp = this->toggle_timestamp;
     this->toggle_timestamp = millis();
   }
-  if (this->getUntoggled()) {
+  else if (this->getUntoggled()) {
+    this->last_untoggle_timestamp = this->untoggle_timestamp;
     this->untoggle_timestamp = millis();
   }
   
@@ -185,6 +187,16 @@ unsigned long DeviceInput<TReturn>::getToggleTimestamp() {
 template <typename TReturn>
 unsigned long DeviceInput<TReturn>::getUntoggleTimestamp() {
   return this->untoggle_timestamp;
+}
+
+template <typename TReturn>
+unsigned long DeviceInput<TReturn>::getLastToggleTimestamp() {
+  return this->last_toggle_timestamp;
+}
+
+template <typename TReturn>
+unsigned long DeviceInput<TReturn>::getLastUntoggleTimestamp() {
+  return this->last_untoggle_timestamp;
 }
 
 template <typename TReturn>

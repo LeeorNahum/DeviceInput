@@ -2,7 +2,6 @@
 #define DEVICEINPUT_H
 
 #include <stdint.h>
-#include <wiring.c>
 
 #include "DeviceInputCallbacks.h"
 #include "DeviceInputList.h"
@@ -51,6 +50,8 @@ class DeviceInput: public DeviceInputCallbacks {
     
     unsigned long getToggleTimestamp();
     unsigned long getUntoggleTimestamp();
+    unsigned long getLastToggleTimestamp();
+    unsigned long getLastUntoggleTimestamp();
     
     unsigned long getElapsedTimeDetected();
     unsigned long getElapsedTimeUndetected();
@@ -74,6 +75,7 @@ class DeviceInput: public DeviceInputCallbacks {
     bool detected = false, last_detected = false;
 
     unsigned long toggle_timestamp = 0, untoggle_timestamp = 0;
+    unsigned long last_toggle_timestamp = 0, last_untoggle_timestamp = 0;
 };
 
 #include "DeviceInput.tpp"
