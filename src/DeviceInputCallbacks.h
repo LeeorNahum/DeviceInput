@@ -65,12 +65,7 @@ class DeviceInputCallbacks {
       uint8_t num_callbacks = 0;
     };
 
-    CallbackArray toggle_callbacks;
-    CallbackArray untoggle_callbacks;
-    CallbackArray detected_callbacks;
-    CallbackArray undetected_callbacks;
-    CallbackArray rising_reading_callbacks;
-    CallbackArray falling_reading_callbacks;
+    CallbackArray toggle_callbacks, untoggle_callbacks, detected_callbacks, undetected_callbacks, rising_reading_callbacks, falling_reading_callbacks;
     
     CallbackArray* getCallbackArray(CallbackType callback_type);
     
