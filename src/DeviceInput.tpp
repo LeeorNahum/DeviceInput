@@ -1,6 +1,6 @@
 template <typename TReturn>
 template <typename... CallbacksAndTypes>
-DeviceInput<TReturn>::DeviceInput(InputFunction input_function, TReturn detection_exact, int update_interval_ms, CallbacksAndTypes... callbacks_and_types) {
+DeviceInput<TReturn>::DeviceInput(const InputFunction& input_function, TReturn detection_exact, int update_interval_ms, CallbacksAndTypes... callbacks_and_types) {
   this->setInputFunction(input_function);
   this->setDetectionExact(detection_exact);
   this->setUpdateInterval(update_interval_ms);
@@ -9,31 +9,31 @@ DeviceInput<TReturn>::DeviceInput(InputFunction input_function, TReturn detectio
 
 template <typename TReturn>
 template <typename... CallbacksAndTypes>
-DeviceInput<TReturn>::DeviceInput(InputFunction input_function, TReturn detection_exact, CallbacksAndTypes... callbacks_and_types) {
+DeviceInput<TReturn>::DeviceInput(const InputFunction& input_function, TReturn detection_exact, CallbackType callback_type, DeviceInputCallback callback, CallbacksAndTypes... callbacks_and_types) {
   this->setInputFunction(input_function);
   this->setDetectionExact(detection_exact);
-  this->setCallbacks(callbacks_and_types...);
+  this->setCallbacks(callback_type, callback, callbacks_and_types...);
 }
 
 template <typename TReturn>
-template <typename... CallbacksAndTypes>
-DeviceInput<TReturn>::DeviceInput(InputFunction input_function, TReturn detection_range[2], int update_interval_ms, CallbacksAndTypes... callbacks_and_types) {
+template <typename T, typename... CallbacksAndTypes>
+DeviceInput<TReturn>::DeviceInput(const InputFunction& input_function, DetectionRange<T> range, int update_interval_ms, CallbacksAndTypes... callbacks_and_types) {
   this->setInputFunction(input_function);
-  this->setDetectionRange(detection_range);
+  this->setDetectionRange(range);
   this->setUpdateInterval(update_interval_ms);
   this->setCallbacks(callbacks_and_types...);
 }
 
 template <typename TReturn>
-template <typename... CallbacksAndTypes>
-DeviceInput<TReturn>::DeviceInput(InputFunction input_function, TReturn detection_range[2], CallbacksAndTypes... callbacks_and_types) {
+template <typename T, typename... CallbacksAndTypes>
+DeviceInput<TReturn>::DeviceInput(const InputFunction& input_function, DetectionRange<T> range, CallbackType callback_type, DeviceInputCallback callback, CallbacksAndTypes... callbacks_and_types) {
   this->setInputFunction(input_function);
-  this->setDetectionRange(detection_range);
-  this->setCallbacks(callbacks_and_types...);
+  this->setDetectionRange(range);
+  this->setCallbacks(callback_type, callback, callbacks_and_types...);
 }
 
 template <typename TReturn>
-void DeviceInput<TReturn>::setInputFunction(InputFunction input_function) {
+void DeviceInput<TReturn>::setInputFunction(const InputFunction& input_function) {
   this->input_function = input_function;
   this->updateReading();
 }
@@ -43,30 +43,24 @@ void DeviceInput<TReturn>::setDetectionExact(TReturn exact) {
   this->detection_exact = exact;
   this->is_detection_range = false;
 
-  this->detection_range[0] = 0;
-  this->detection_range[1] = 0;
+  this->detection_range.min = 0;
+  this->detection_range.max = 0;
   
   this->updateDetected();
   this->updateReading();
 }
 
 template <typename TReturn>
-bool DeviceInput<TReturn>::setDetectionRange(TReturn range[2]) {
-  if (sizeof(range)/sizeof(range[0]) < 2) {
-    this->setDetectionExact(0);
-    return false;
-  }
-
-  this->detection_range[0] = range[0];
-  this->detection_range[1] = range[1];
+template <typename T>
+void DeviceInput<TReturn>::setDetectionRange(DetectionRange<T> range) {
+  this->detection_range.min = range.min;
+  this->detection_range.max = range.max;
   this->is_detection_range = true;
 
-  this->detection_exact = 0;
-  
-  this->updateDetected();
-  this->updateReading();
+  this->detection_exact = true;
 
-  return true;
+  this->updateReading();
+  this->updateDetected();
 }
 
 template <typename TReturn>
@@ -75,7 +69,7 @@ TReturn DeviceInput<TReturn>::getDetectionExact() {
 }
 
 template <typename TReturn>
-TReturn* DeviceInput<TReturn>::getDetectionRange() {
+DetectionRange<TReturn> DeviceInput<TReturn>::getDetectionRange() {
   return this->detection_range;
 }
 
@@ -130,7 +124,7 @@ bool DeviceInput<TReturn>::updateDetected() {
 
   this->detected = false;
   if (this->is_detection_range) {
-    if (this->getReading() >= this->getDetectionRange()[0] && this->getReading() <= this->getDetectionRange()[1]) {
+    if (this->getReading() >= this->getDetectionRange().min && this->getReading() <= this->getDetectionRange().max) {
       this->detected = true;
     }
   }

@@ -1,32 +1,40 @@
 #ifndef DEVICEINPUT_H
 #define DEVICEINPUT_H
 
-#include <stdint.h>
+#include <Arduino.h>
 
 #include "DeviceInputCallbacks.h"
 #include "DeviceInputList.h"
 
+template <typename T = int>
+struct DetectionRange {
+  DetectionRange(T min_val, T max_val) : min(min_val), max(max_val) {}
+  T min;
+  T max;
+};
+
 template <typename TReturn = int>
 class DeviceInput: public DeviceInputCallbacks {
   public:
-    using InputFunction = TReturn (*)();
+    using InputFunction = std::function<TReturn()>;
     
     template <typename... CallbacksAndTypes>
-    DeviceInput(InputFunction input_function, TReturn detection_exact, int update_interval_ms = 0, CallbacksAndTypes... callbacks_and_types);
+    DeviceInput(const InputFunction& input_function, TReturn detection_exact, int update_interval_ms = 0, CallbacksAndTypes... callbacks_and_types);
     template <typename... CallbacksAndTypes>
-    DeviceInput(InputFunction input_function, TReturn detection_exact, CallbacksAndTypes... callbacks_and_types);
-    template <typename... CallbacksAndTypes>
-    DeviceInput(InputFunction input_function, TReturn detection_range[2], int update_interval_ms = 0, CallbacksAndTypes... callbacks_and_types);
-    template <typename... CallbacksAndTypes>
-    DeviceInput(InputFunction input_function, TReturn detection_range[2], CallbacksAndTypes... callbacks_and_types);
+    DeviceInput(const InputFunction& input_function, TReturn detection_exact = true, CallbackType callback_type, DeviceInputCallback callback, CallbacksAndTypes... callbacks_and_types);
+    template <typename T, typename... CallbacksAndTypes>
+    DeviceInput(const InputFunction& input_function, DetectionRange<T> detection_range, int update_interval_ms = 0, CallbacksAndTypes... callbacks_and_types);
+    template <typename T, typename... CallbacksAndTypes>
+    DeviceInput(const InputFunction& input_function, DetectionRange<T> detection_range, CallbackType callback_type, DeviceInputCallback callback, CallbacksAndTypes... callbacks_and_types);
 
-    void setInputFunction(InputFunction input_function);
+    void setInputFunction(const InputFunction& input_function);
 
     void setDetectionExact(TReturn exact);
-    bool setDetectionRange(TReturn range[2]);
+    template <typename T>
+    void setDetectionRange(DetectionRange<T> range);
 
     TReturn getDetectionExact();
-    TReturn* getDetectionRange();
+    DetectionRange<TReturn> getDetectionRange();
 
     void setUpdateInterval(int update_interval_ms = 0);
     int getUpdateInterval();
@@ -61,8 +69,8 @@ class DeviceInput: public DeviceInputCallbacks {
   private:
     InputFunction input_function = nullptr;
 
-    TReturn detection_exact = 0;
-    TReturn detection_range[2] = {0, 0};
+    TReturn detection_exact = true;
+    DetectionRange<TReturn> detection_range = {0, 0};
     bool is_detection_range = false;
     
     int update_interval_ms = 0;
