@@ -1,9 +1,7 @@
 #ifndef DEVICEINPUTLIST_H
 #define DEVICEINPUTLIST_H
 
-#ifndef MAX_INPUT_LIST_ARRAY_SIZE
-#define MAX_INPUT_LIST_ARRAY_SIZE 12
-#endif
+#include <vector>
 
 using DeviceInputType = DeviceInputCallbacks*;
 
@@ -20,19 +18,19 @@ class DeviceInputList {
     template <uint8_t Size, typename... CallbacksAndTypes>
     DeviceInputList(DeviceInputType (&device_input_array)[Size], CallbacksAndTypes... callbacks_and_types);
 
-    bool addDeviceInput(DeviceInputType device_input);
+    void addDeviceInput(DeviceInputType device_input);
     template <typename... DeviceInputs>
-    bool addDeviceInputs(DeviceInputType device_input, DeviceInputs*... device_inputs);
+    void addDeviceInputs(DeviceInputType device_input, DeviceInputs*... device_inputs);
     template <uint8_t Size>
-    bool addDeviceInputs(DeviceInputType (&device_input_array)[Size]);
+    void addDeviceInputs(DeviceInputType (&device_input_array)[Size]);
     
-    bool setDeviceInput(DeviceInputType device_input);
+    void setDeviceInput(DeviceInputType device_input);
     template <typename... DeviceInputs>
-    bool setDeviceInputs(DeviceInputs*... device_inputs);
+    void setDeviceInputs(DeviceInputs*... device_inputs);
     template <uint8_t Size>
-    bool setDeviceInputs(DeviceInputType (&device_input_array)[Size]);
+    void setDeviceInputs(DeviceInputType (&device_input_array)[Size]);
 
-    bool clearDeviceInputs();
+    void clearDeviceInputs();
 
     void setUpdateInterval(int update_interval_ms = 0);
     int getUpdateInterval();
@@ -46,25 +44,24 @@ class DeviceInputList {
     
     bool updateAll();
 
-    bool addCallbackForAll(CallbackType callback_type, DeviceInputCallback callback);
+    void addCallbackForAll(CallbackType callback_type, DeviceInputCallback callback);
     template <typename... CallbacksAndTypes>
-    bool addCallbacksForAll(CallbacksAndTypes... callbacks_and_types);
+    void addCallbacksForAll(CallbacksAndTypes... callbacks_and_types);
     
-    bool setCallbackForAll(CallbackType callback_type, DeviceInputCallback callback);
+    void setCallbackForAll(CallbackType callback_type, DeviceInputCallback callback);
     template <typename... CallbacksAndTypes>
-    bool setCallbacksForAll(CallbacksAndTypes... callbacks_and_types);
+    void setCallbacksForAll(CallbacksAndTypes... callbacks_and_types);
 
     bool clearCallbacksForAll(CallbackType callback_type);
     bool clearCallbacksForAll();
     
   private:
-    DeviceInputType device_input_list[MAX_INPUT_LIST_ARRAY_SIZE] = {nullptr};
-    uint8_t input_list_size = 0;
+    std::vector<DeviceInputType> device_input_list;
     
     int update_interval_ms = 0;
     unsigned long last_update_time = 0;
     
-    bool addDeviceInputs();
+    void addDeviceInputs();
 };
 
 #include "DeviceInputList.tpp"

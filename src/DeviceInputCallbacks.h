@@ -1,9 +1,7 @@
 #ifndef DEVICEINPUTCALLBACKS_H
 #define DEVICEINPUTCALLBACKS_H
 
-#ifndef MAX_CALLBACK_ARRAY_SIZE
-#define MAX_CALLBACK_ARRAY_SIZE 3
-#endif
+#include <vector>
 
 enum CallbackType {
   TOGGLE,
@@ -26,13 +24,13 @@ class DeviceInputCallbacks {
     bool hasCallbacks();
     bool hasCallbacks(CallbackType callback_type);
     
-    bool addCallback(CallbackType callback_type, DeviceInputCallback callback);
+    void addCallback(CallbackType callback_type, DeviceInputCallback callback);
     template <typename... CallbacksAndTypes>
-    bool addCallbacks(CallbackType callback_type, DeviceInputCallback callback, CallbacksAndTypes... callbacks_and_types);
+    void addCallbacks(CallbackType callback_type, DeviceInputCallback callback, CallbacksAndTypes... callbacks_and_types);
     
-    bool setCallback(CallbackType callback_type, DeviceInputCallback callback);
+    void setCallback(CallbackType callback_type, DeviceInputCallback callback);
     template <typename... CallbacksAndTypes>
-    bool setCallbacks(CallbacksAndTypes... callbacks_and_types);
+    void setCallbacks(CallbacksAndTypes... callbacks_and_types);
 
     bool clearCallbacks(CallbackType callback_type);
     bool clearCallbacks();
@@ -46,7 +44,7 @@ class DeviceInputCallbacks {
     virtual bool update() = 0;
     
   protected:
-    virtual bool getRisingReading() = 0; // TODO ? update to return bool instead of returning a comparison every time
+    virtual bool getRisingReading() = 0; 
     virtual bool getFallingReading() = 0;
     
     virtual bool getDetected() = 0;
@@ -60,19 +58,14 @@ class DeviceInputCallbacks {
     
     const CallbackType callbackTypes[6] = {TOGGLE, UNTOGGLE, DETECTED, UNDETECTED, RISING_READING, FALLING_READING};
     
-    struct CallbackArray {
-      DeviceInputCallback callbacks[MAX_CALLBACK_ARRAY_SIZE] = {nullptr};
-      uint8_t num_callbacks = 0;
-    };
-
-    CallbackArray toggle_callbacks, untoggle_callbacks, detected_callbacks, undetected_callbacks, rising_reading_callbacks, falling_reading_callbacks;
+    std::vector<DeviceInputCallback> toggle_callbacks, untoggle_callbacks, detected_callbacks, undetected_callbacks, rising_reading_callbacks, falling_reading_callbacks;
     
-    CallbackArray* getCallbackArray(CallbackType callback_type);
+    std::vector<DeviceInputCallback>* getCallbackVector(CallbackType callback_type);
     
     template <typename... CallbacksAndTypes>
-    bool addCallbacks(CallbackType callback_type, CallbackType new_callback_type, CallbacksAndTypes... callbacks_and_types);
-    bool addCallbacks(CallbackType callback_type);
-    bool addCallbacks();
+    void addCallbacks(CallbackType callback_type, CallbackType new_callback_type, CallbacksAndTypes... callbacks_and_types);
+    void addCallbacks(CallbackType callback_type);
+    void addCallbacks();
 };
 
 #include "DeviceInputCallbacks.tpp"

@@ -24,69 +24,46 @@ bool DeviceInputCallbacks::hasCallbacks() {
 }
 
 bool DeviceInputCallbacks::hasCallbacks(CallbackType callback_type) {
-  CallbackArray* callback_array = this->getCallbackArray(callback_type);
-  
-  return callback_array->num_callbacks > 0;
+  std::vector<DeviceInputCallback>* callback_vector = this->getCallbackVector(callback_type);
+  return !callback_vector->empty();
 }
 
-bool DeviceInputCallbacks::addCallback(CallbackType callback_type, DeviceInputCallback callback) {
-  CallbackArray* callback_array = this->getCallbackArray(callback_type);
-  
-  if (callback_array->num_callbacks >= MAX_CALLBACK_ARRAY_SIZE) {
-    return false;
-  }
-  
-  callback_array->callbacks[callback_array->num_callbacks++] = callback;
-  
-  return true;
+void DeviceInputCallbacks::addCallback(CallbackType callback_type, DeviceInputCallback callback) {
+  std::vector<DeviceInputCallback>* callback_vector = this->getCallbackVector(callback_type);
+  callback_vector->push_back(callback);
 }
 
 template <typename... CallbacksAndTypes>
-bool DeviceInputCallbacks::addCallbacks(CallbackType callback_type, DeviceInputCallback callback, CallbacksAndTypes... callbacks_and_types) {
-  bool success = true;
-  
-  success = success && this->addCallback(callback_type, callback);
-  success = success && this->addCallbacks(callback_type, callbacks_and_types...);
-  
-  return success;
+void DeviceInputCallbacks::addCallbacks(CallbackType callback_type, DeviceInputCallback callback, CallbacksAndTypes... callbacks_and_types) {
+  this->addCallback(callback_type, callback);
+  this->addCallbacks(callback_type, callbacks_and_types...);
 }
 
 template <typename... CallbacksAndTypes>
-bool DeviceInputCallbacks::addCallbacks(CallbackType callback_type, CallbackType new_callback_type, CallbacksAndTypes... callbacks_and_types) {
-  return this->addCallbacks(new_callback_type, callbacks_and_types...);
+void DeviceInputCallbacks::addCallbacks(CallbackType callback_type, CallbackType new_callback_type, CallbacksAndTypes... callbacks_and_types) {
+  this->addCallbacks(new_callback_type, callbacks_and_types...);
 }
 
-bool DeviceInputCallbacks::addCallbacks(CallbackType callback_type) {
-  return true;
-}
+void DeviceInputCallbacks::addCallbacks(CallbackType callback_type) {}
 
-bool DeviceInputCallbacks::addCallbacks() {
-  return true;
-}
+void DeviceInputCallbacks::addCallbacks() {}
 
-bool DeviceInputCallbacks::setCallback(CallbackType callback_type, DeviceInputCallback callback) {
+void DeviceInputCallbacks::setCallback(CallbackType callback_type, DeviceInputCallback callback) {
   this->clearCallbacks();
-  return this->addCallback(callback_type, callback);
+  this->addCallback(callback_type, callback);
 }
 
 template <typename... CallbacksAndTypes>
-bool DeviceInputCallbacks::setCallbacks(CallbacksAndTypes... callbacks_and_types) {
+void DeviceInputCallbacks::setCallbacks(CallbacksAndTypes... callbacks_and_types) {
   this->clearCallbacks();
-  return this->addCallbacks(callbacks_and_types...);
+  this->addCallbacks(callbacks_and_types...);
 }
 
 bool DeviceInputCallbacks::clearCallbacks(CallbackType callback_type) {
-  CallbackArray* callback_array = this->getCallbackArray(callback_type);
-  
-  if (callback_array->num_callbacks == 0) {
-    return false;
-  }
-  
-  for (uint8_t i = 0; i < MAX_CALLBACK_ARRAY_SIZE; i++) {
-    callback_array->callbacks[i] = nullptr;
-  }
-  callback_array->num_callbacks = 0;
-  return true;
+  std::vector<DeviceInputCallback>* callback_vector = this->getCallbackVector(callback_type);
+  bool had_callbacks = !callback_vector->empty();
+  callback_vector->clear();
+  return had_callbacks;
 }
 
 bool DeviceInputCallbacks::clearCallbacks() {
@@ -124,14 +101,14 @@ bool DeviceInputCallbacks::runCallbacks() {
   bool callback_ran = false;
 
   for (CallbackType callback_type : callbackTypes) {
-    CallbackArray* callback_array = this->getCallbackArray(callback_type);
+    std::vector<DeviceInputCallback>* callback_vector = this->getCallbackVector(callback_type);
 
-    if (callback_array->num_callbacks == 0 || !this->callbackActive(callback_type)) {
+    if (callback_vector->empty() || !this->callbackActive(callback_type)) {
       continue;
     }
 
-    for (uint8_t i = 0; i < callback_array->num_callbacks; i++) {
-      callback_array->callbacks[i]();
+    for (DeviceInputCallback& callback : *callback_vector) {
+      callback();
       callback_ran = true;
     }
   }
@@ -139,7 +116,7 @@ bool DeviceInputCallbacks::runCallbacks() {
   return callback_ran;
 }
 
-DeviceInputCallbacks::CallbackArray* DeviceInputCallbacks::getCallbackArray(CallbackType callback_type) {
+std::vector<DeviceInputCallback>* DeviceInputCallbacks::getCallbackVector(CallbackType callback_type) {
   switch (callback_type) {
     case TOGGLE:
       return &this->toggle_callbacks;

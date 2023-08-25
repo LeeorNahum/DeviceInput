@@ -29,68 +29,46 @@ DeviceInputList::DeviceInputList(DeviceInputType (&device_input_array)[Size], Ca
   this->addCallbacksForAll(callbacks_and_types...);
 }
 
-bool DeviceInputList::addDeviceInput(DeviceInputType device_input) {
-  if (this->input_list_size >= MAX_INPUT_LIST_ARRAY_SIZE) {
-    return false;
-  }
-
-  this->device_input_list[this->input_list_size++] = device_input;
-  return true;
+void DeviceInputList::addDeviceInput(DeviceInputType device_input) {
+  this->device_input_list.push_back(device_input);
 }
 
 template <typename... DeviceInputs>
-bool DeviceInputList::addDeviceInputs(DeviceInputType device_input, DeviceInputs*... device_inputs) {
-  bool success = true;
-  
-  success = success && addDeviceInput(device_input);
-  success = success && addDeviceInputs(device_inputs...);
-  
-  return success;
+void DeviceInputList::addDeviceInputs(DeviceInputType device_input, DeviceInputs*... device_inputs) {
+  this->device_input_list.push_back(device_input);
+  this->addDeviceInputs(device_inputs...);
 }
 
-bool DeviceInputList::addDeviceInputs() {
-  return true;
+void DeviceInputList::addDeviceInputs() {
+  return;
 }
 
 template <uint8_t Size>
-bool DeviceInputList::addDeviceInputs(DeviceInputType (&device_input_array)[Size]) {
-  bool success = true;
-
+void DeviceInputList::addDeviceInputs(DeviceInputType (&device_input_array)[Size]) {
   for (uint8_t i = 0; i < Size; i++) {
-    success = success && this->addDeviceInput(device_input_array[i]);
+    this->addDeviceInput(device_input_array[i]);
   }
-
-  return success;
 }
 
-bool DeviceInputList::setDeviceInput(DeviceInputType device_input) {
+void DeviceInputList::setDeviceInput(DeviceInputType device_input) {
   this->clearDeviceInputs();
-  return this->addDeviceInput(device_input);
+  this->addDeviceInput(device_input);
 }
 
 template <typename... DeviceInputs>
-bool DeviceInputList::setDeviceInputs(DeviceInputs*... device_inputs) {
+void DeviceInputList::setDeviceInputs(DeviceInputs*... device_inputs) {
   this->clearDeviceInputs();
-  return this->addDeviceInputs(device_inputs...);
+  this->addDeviceInputs(device_inputs...);
 }
 
 template <uint8_t Size>
-bool DeviceInputList::setDeviceInputs(DeviceInputType (&device_input_array)[Size]) {
+void DeviceInputList::setDeviceInputs(DeviceInputType (&device_input_array)[Size]) {
   this->clearDeviceInputs();
-  return this->addDeviceInputs(device_input_array);
+  this->addDeviceInputs(device_input_array);
 }
 
-bool DeviceInputList::clearDeviceInputs() {
-  if (!this->input_list_size > 0) {
-    return false;
-  }
-  
-  for (uint8_t i = 0; i < MAX_INPUT_LIST_ARRAY_SIZE; i++) {
-    this->device_input_list[i] = nullptr;
-  }
-  
-  this->input_list_size = 0;
-  return true;
+void DeviceInputList::clearDeviceInputs() {
+  device_input_list.clear();
 }
 
 void DeviceInputList::setUpdateInterval(int update_interval_ms) {
@@ -102,26 +80,22 @@ int DeviceInputList::getUpdateInterval() {
 }
 
 DeviceInputType* DeviceInputList::getDeviceInputList() {
-  return this->device_input_list;
+  return this->device_input_list.data();
 }
 
 DeviceInputType DeviceInputList::getDeviceInput(uint8_t index) {
-  if (index >= this->input_list_size) {
-    return nullptr;
-  }
-
   return this->device_input_list[index];
 }
 
 void DeviceInputList::updateReadingForAll() {
-  for (uint8_t i = 0; i < this->input_list_size; i++) {
-    this->device_input_list[i]->updateReading();
+  for (DeviceInputType& device_input : this->device_input_list) {
+    device_input->updateReading();
   }
 }
 
 void DeviceInputList::updateDetectedForAll() {
-  for (uint8_t i = 0; i < this->input_list_size; i++) {
-    this->device_input_list[i]->updateDetected();
+  for (DeviceInputType& device_input : this->device_input_list) {
+    device_input->updateDetected();
   }
 }
 
@@ -134,59 +108,51 @@ bool DeviceInputList::updateAll() {
     this->last_update_time = current_time;
   }
   
-  for (uint8_t i = 0; i < this->input_list_size; i++) {
-    this->device_input_list[i]->update();
+  for (DeviceInputType& device_input : this->device_input_list) {
+    device_input->update();
   }
   
   return true;
 }
 
-bool DeviceInputList::addCallbackForAll(CallbackType callback_type, DeviceInputCallback callback) {
-  bool success = true;
-  for (int i = 0; i < this->input_list_size; i++) {
-    success = success && this->device_input_list[i]->addCallback(callback_type, callback);
+void DeviceInputList::addCallbackForAll(CallbackType callback_type, DeviceInputCallback callback) {
+  for (DeviceInputType& device_input : this->device_input_list) {
+    device_input->addCallback(callback_type, callback);
   }
-  return success;
 }
 
 template <typename... CallbacksAndTypes>
-bool DeviceInputList::addCallbacksForAll(CallbacksAndTypes... callbacks_and_types) {
-  bool success = true;
-  for (int i = 0; i < this->input_list_size; i++) {
-    success = success && this->device_input_list[i]->addCallbacks(callbacks_and_types...);
+void DeviceInputList::addCallbacksForAll(CallbacksAndTypes... callbacks_and_types) {
+  for (DeviceInputType& device_input : this->device_input_list) {
+    device_input->addCallbacks(callbacks_and_types...);
   }
-  return success;
 }
 
-bool DeviceInputList::setCallbackForAll(CallbackType callback_type, DeviceInputCallback callback) {
-  bool success = true;
-  for (int i = 0; i < this->input_list_size; i++) {
-    success = success && this->device_input_list[i]->setCallback(callback_type, callback);
+void DeviceInputList::setCallbackForAll(CallbackType callback_type, DeviceInputCallback callback) {
+  for (DeviceInputType& device_input : this->device_input_list) {
+    device_input->setCallback(callback_type, callback);
   }
-  return success;
 }
 
 template <typename... CallbacksAndTypes>
-bool DeviceInputList::setCallbacksForAll(CallbacksAndTypes... callbacks_and_types) {
-  bool success = true;
-  for (int i = 0; i < this->input_list_size; i++) {
-    success = success && this->device_input_list[i]->setCallbacks(callbacks_and_types...);
+void DeviceInputList::setCallbacksForAll(CallbacksAndTypes... callbacks_and_types) {
+  for (DeviceInputType& device_input : this->device_input_list) {
+    device_input->setCallbacks(callbacks_and_types...);
   }
-  return success;
 }
 
 bool DeviceInputList::clearCallbacksForAll(CallbackType callback_type) {
   bool success = false;
-  for (uint8_t i = 0; i < this->input_list_size; i++) {
-    success = success || this->device_input_list[i]->clearCallbacks(callback_type);
+  for (DeviceInputType& device_input : this->device_input_list) {
+    success = success || device_input->clearCallbacks(callback_type);
   }
   return success;
 }
 
 bool DeviceInputList::clearCallbacksForAll() {
   bool success = false;
-  for (uint8_t i = 0; i < this->input_list_size; i++) {
-    success = success || this->device_input_list[i]->clearCallbacks();
+  for (DeviceInputType& device_input : this->device_input_list) {
+    success = success || device_input->clearCallbacks();
   }
   return success;
 }
