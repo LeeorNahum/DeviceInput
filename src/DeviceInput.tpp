@@ -9,10 +9,10 @@ DeviceInput<TReturn>::DeviceInput(const InputFunction& input_function, TReturn d
 
 template <typename TReturn>
 template <typename... CallbacksAndTypes>
-DeviceInput<TReturn>::DeviceInput(const InputFunction& input_function, TReturn detection_exact, CallbackType callback_type, DeviceInputCallback callback, CallbacksAndTypes... callbacks_and_types) {
+DeviceInput<TReturn>::DeviceInput(const InputFunction& input_function, TReturn detection_exact, CallbacksAndTypes... callbacks_and_types) {
   this->setInputFunction(input_function);
   this->setDetectionExact(detection_exact);
-  this->setCallbacks(callback_type, callback, callbacks_and_types...);
+  this->setCallbacks(callbacks_and_types...);
 }
 
 template <typename TReturn>
@@ -26,10 +26,10 @@ DeviceInput<TReturn>::DeviceInput(const InputFunction& input_function, Detection
 
 template <typename TReturn>
 template <typename T, typename... CallbacksAndTypes>
-DeviceInput<TReturn>::DeviceInput(const InputFunction& input_function, DetectionRange<T> range, CallbackType callback_type, DeviceInputCallback callback, CallbacksAndTypes... callbacks_and_types) {
+DeviceInput<TReturn>::DeviceInput(const InputFunction& input_function, DetectionRange<T> range, CallbacksAndTypes... callbacks_and_types) {
   this->setInputFunction(input_function);
   this->setDetectionRange(range);
-  this->setCallbacks(callback_type, callback, callbacks_and_types...);
+  this->setCallbacks(callbacks_and_types...);
 }
 
 template <typename TReturn>
