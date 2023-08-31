@@ -1,35 +1,35 @@
 template <typename TReturn>
-template <typename... CallbacksAndTypes>
-DeviceInput<TReturn>::DeviceInput(const InputFunction& input_function, TReturn detection_exact, int update_interval_ms, CallbacksAndTypes... callbacks_and_types) {
+template <typename... Callbacks>
+DeviceInput<TReturn>::DeviceInput(const InputFunction& input_function, TReturn detection_exact, int update_interval_ms, Callbacks... callbacks) {
   this->setInputFunction(input_function);
   this->setDetectionExact(detection_exact);
   this->setUpdateInterval(update_interval_ms);
-  this->setCallbacks(callbacks_and_types...);
+  this->setCallbacks(callbacks...);
 }
 
 template <typename TReturn>
-template <typename... CallbacksAndTypes>
-DeviceInput<TReturn>::DeviceInput(const InputFunction& input_function, TReturn detection_exact, CallbacksAndTypes... callbacks_and_types) {
+template <typename... Callbacks>
+DeviceInput<TReturn>::DeviceInput(const InputFunction& input_function, TReturn detection_exact, Callbacks... callbacks) {
   this->setInputFunction(input_function);
   this->setDetectionExact(detection_exact);
-  this->setCallbacks(callbacks_and_types...);
+  this->setCallbacks(callbacks...);
 }
 
 template <typename TReturn>
-template <typename T, typename... CallbacksAndTypes>
-DeviceInput<TReturn>::DeviceInput(const InputFunction& input_function, DetectionRange<T> range, int update_interval_ms, CallbacksAndTypes... callbacks_and_types) {
+template <typename T, typename... Callbacks>
+DeviceInput<TReturn>::DeviceInput(const InputFunction& input_function, DetectionRange<T> range, int update_interval_ms, Callbacks... callbacks) {
   this->setInputFunction(input_function);
   this->setDetectionRange(range);
   this->setUpdateInterval(update_interval_ms);
-  this->setCallbacks(callbacks_and_types...);
+  this->setCallbacks(callbacks...);
 }
 
 template <typename TReturn>
-template <typename T, typename... CallbacksAndTypes>
-DeviceInput<TReturn>::DeviceInput(const InputFunction& input_function, DetectionRange<T> range, CallbacksAndTypes... callbacks_and_types) {
+template <typename T, typename... Callbacks>
+DeviceInput<TReturn>::DeviceInput(const InputFunction& input_function, DetectionRange<T> range, Callbacks... callbacks) {
   this->setInputFunction(input_function);
   this->setDetectionRange(range);
-  this->setCallbacks(callbacks_and_types...);
+  this->setCallbacks(callbacks...);
 }
 
 template <typename TReturn>

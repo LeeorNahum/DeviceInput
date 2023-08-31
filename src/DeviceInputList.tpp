@@ -1,3 +1,5 @@
+// DeviceInputList.tpp
+
 template <typename... DeviceInputs>
 DeviceInputList::DeviceInputList(int update_interval_ms, DeviceInputs*... device_inputs) {
   this->setUpdateInterval(update_interval_ms);
@@ -9,24 +11,21 @@ DeviceInputList::DeviceInputList(DeviceInputs*... device_inputs) {
   this->setDeviceInputs(device_inputs...);
 }
 
-template <uint8_t Size, typename... CallbacksAndTypes>
-DeviceInputList::DeviceInputList(DeviceInputType (&device_input_array)[Size], int update_interval_ms, CallbacksAndTypes... callbacks_and_types) {
+template <uint8_t Size>
+DeviceInputList::DeviceInputList(DeviceInputType (&device_input_array)[Size], int update_interval_ms) {
   this->setDeviceInputs(device_input_array);
   this->setUpdateInterval(update_interval_ms);
-  this->addCallbacksForAll(callbacks_and_types...);
 }
 
-template <uint8_t Size, typename... CallbacksAndTypes>
-DeviceInputList::DeviceInputList(int update_interval_ms, DeviceInputType (&device_input_array)[Size], CallbacksAndTypes... callbacks_and_types) {
+template <uint8_t Size>
+DeviceInputList::DeviceInputList(int update_interval_ms, DeviceInputType (&device_input_array)[Size]) {
   this->setUpdateInterval(update_interval_ms);
   this->setDeviceInputs(device_input_array);
-  this->addCallbacksForAll(callbacks_and_types...);
 }
 
-template <uint8_t Size, typename... CallbacksAndTypes>
-DeviceInputList::DeviceInputList(DeviceInputType (&device_input_array)[Size], CallbacksAndTypes... callbacks_and_types) {
+template <uint8_t Size>
+DeviceInputList::DeviceInputList(DeviceInputType (&device_input_array)[Size]) {
   this->setDeviceInputs(device_input_array);
-  this->addCallbacksForAll(callbacks_and_types...);
 }
 
 void DeviceInputList::addDeviceInput(DeviceInputType device_input) {
@@ -37,10 +36,6 @@ template <typename... DeviceInputs>
 void DeviceInputList::addDeviceInputs(DeviceInputType device_input, DeviceInputs*... device_inputs) {
   this->device_input_list.push_back(device_input);
   this->addDeviceInputs(device_inputs...);
-}
-
-void DeviceInputList::addDeviceInputs() {
-  return;
 }
 
 template <uint8_t Size>
@@ -107,46 +102,38 @@ bool DeviceInputList::updateAll() {
     }
     this->last_update_time = current_time;
   }
-  
+
   for (DeviceInputType& device_input : this->device_input_list) {
     device_input->update();
   }
-  
+
   return true;
 }
 
-void DeviceInputList::addCallbackForAll(CallbackType callback_type, DeviceInputCallback callback) {
+void DeviceInputList::addCallbackForAll(DeviceInputCallback callback) {
   for (DeviceInputType& device_input : this->device_input_list) {
-    device_input->addCallback(callback_type, callback);
+    device_input->addCallback(callback);
   }
 }
 
-template <typename... CallbacksAndTypes>
-void DeviceInputList::addCallbacksForAll(CallbacksAndTypes... callbacks_and_types) {
+template <typename... Callbacks>
+void DeviceInputList::addCallbacksForAll(Callbacks... callbacks) {
   for (DeviceInputType& device_input : this->device_input_list) {
-    device_input->addCallbacks(callbacks_and_types...);
+    device_input->addCallbacks(callbacks...);
   }
 }
 
-void DeviceInputList::setCallbackForAll(CallbackType callback_type, DeviceInputCallback callback) {
+void DeviceInputList::setCallbackForAll(DeviceInputCallback callback) {
   for (DeviceInputType& device_input : this->device_input_list) {
-    device_input->setCallback(callback_type, callback);
+    device_input->setCallback(callback);
   }
 }
 
-template <typename... CallbacksAndTypes>
-void DeviceInputList::setCallbacksForAll(CallbacksAndTypes... callbacks_and_types) {
+template <typename... Callbacks>
+void DeviceInputList::setCallbacksForAll(Callbacks... callbacks) {
   for (DeviceInputType& device_input : this->device_input_list) {
-    device_input->setCallbacks(callbacks_and_types...);
+    device_input->setCallbacks(callbacks...);
   }
-}
-
-bool DeviceInputList::clearCallbacksForAll(CallbackType callback_type) {
-  bool success = false;
-  for (DeviceInputType& device_input : this->device_input_list) {
-    success = success || device_input->clearCallbacks(callback_type);
-  }
-  return success;
 }
 
 bool DeviceInputList::clearCallbacksForAll() {

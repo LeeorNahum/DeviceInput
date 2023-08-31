@@ -18,14 +18,14 @@ class DeviceInput: public DeviceInputCallbacks {
   public:
     using InputFunction = std::function<TReturn()>;
     
-    template <typename... CallbacksAndTypes>
-    DeviceInput(const InputFunction& input_function, TReturn detection_exact = true, int update_interval_ms = 0, CallbacksAndTypes... callbacks_and_types);
-    template <typename... CallbacksAndTypes>
-    DeviceInput(const InputFunction& input_function, TReturn detection_exact, CallbacksAndTypes... callbacks_and_types);
-    template <typename T, typename... CallbacksAndTypes>
-    DeviceInput(const InputFunction& input_function, DetectionRange<T> detection_range, int update_interval_ms = 0, CallbacksAndTypes... callbacks_and_types);
-    template <typename T, typename... CallbacksAndTypes>
-    DeviceInput(const InputFunction& input_function, DetectionRange<T> detection_range, CallbacksAndTypes... callbacks_and_types);
+    template <typename... Callbacks>
+    DeviceInput(const InputFunction& input_function, TReturn detection_exact = true, int update_interval_ms = 0, Callbacks... callbacks);
+    template <typename... Callbacks>
+    DeviceInput(const InputFunction& input_function, TReturn detection_exact, Callbacks... callbacks);
+    template <typename T, typename... Callbacks>
+    DeviceInput(const InputFunction& input_function, DetectionRange<T> detection_range, int update_interval_ms = 0, Callbacks... callbacks);
+    template <typename T, typename... Callbacks>
+    DeviceInput(const InputFunction& input_function, DetectionRange<T> detection_range, Callbacks... callbacks);
 
     void setInputFunction(const InputFunction& input_function);
 
