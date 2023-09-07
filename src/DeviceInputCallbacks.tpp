@@ -28,6 +28,10 @@ void DeviceInputCallbacks::addCallbacks(DeviceInputCallback callback, Callbacks.
   this->addCallbacks(callbacks...);
 }
 
+void DeviceInputCallbacks::addCallbacks() {
+  return;
+}
+
 void DeviceInputCallbacks::setCallback(DeviceInputCallback callback) {
   this->clearCallbacks();
   this->addCallback(callback);

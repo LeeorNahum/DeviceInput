@@ -44,6 +44,8 @@ class DeviceInputCallbacks {
   private:
     bool callbacks_disabled = false;
     std::vector<DeviceInputCallback> callbacks;
+    
+    void addCallbacks();
 };
 
 #include "DeviceInputCallbacks.tpp"
